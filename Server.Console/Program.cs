@@ -56,7 +56,26 @@ catch (Exception ex)
 }
 
 // ============================================================
-// 3. 配置校验与自动修正（参考 Zircon Legend Server）
+// 3. 环境变量覆盖（作者: asm0x1）
+//    Docker 环境下通过 docker-compose.yml 或 .env 传入，
+//    优先级高于 Configs/Setup.ini
+// ============================================================
+var envIP = Environment.GetEnvironmentVariable("SERVER_IP");
+if (!string.IsNullOrWhiteSpace(envIP))
+{
+    Console.WriteLine($"[环境变量] SERVER_IP={envIP}（覆盖配置文件）");
+    Settings.IPAddress = envIP;
+}
+
+var envPort = Environment.GetEnvironmentVariable("SERVER_PORT");
+if (!string.IsNullOrWhiteSpace(envPort) && int.TryParse(envPort, out int port))
+{
+    Console.WriteLine($"[环境变量] SERVER_PORT={port}（覆盖配置文件）");
+    Settings.Port = (ushort)port;
+}
+
+// ============================================================
+// 4. 配置校验与自动修正（参考 Zircon Legend Server）
 // ============================================================
 Console.WriteLine("[校验] 正在检查配置参数...");
 
@@ -93,7 +112,7 @@ Console.WriteLine($"[信息] 账户数据路径: {Envir.AccountPath}");
 Console.WriteLine();
 
 // ============================================================
-// 4. 注册优雅关闭处理（必须在启动服务器之前注册）
+// 5. 注册优雅关闭处理（必须在启动服务器之前注册）
 // ============================================================
 var shutdownEvent = new ManualResetEventSlim(false);
 
@@ -133,7 +152,7 @@ if (OperatingSystem.IsLinux())
 }
 
 // ============================================================
-// 5. 启动服务器
+// 6. 启动服务器
 // ============================================================
 Console.WriteLine("[启动] 正在加载游戏数据并启动服务器...");
 
@@ -166,7 +185,7 @@ Console.WriteLine("[启动] 服务器主循环已启动！网络监听中...");
 Console.WriteLine();
 
 // ============================================================
-// 5.5 首次启动时自动创建默认管理员账户（作者: asm0x1）
+// 6.5 首次启动时自动创建默认管理员账户（作者: asm0x1）
 //     仅在 AccountList 为空（数据库全新）时创建，后续启动不会重复执行
 // ============================================================
 if (Envir.Main.AccountList.Count == 0)
@@ -179,7 +198,7 @@ else
 }
 
 // ============================================================
-// 6. 后台日志轮询（参考 Zircon Legend Server 模式）
+// 7. 后台日志轮询（参考 Zircon Legend Server 模式）
 //    每 200ms 从 MessageQueue 读取日志并输出到控制台
 // ============================================================
 var logCts = new CancellationTokenSource();
@@ -224,7 +243,7 @@ var logTask = Task.Run(async () =>
 });
 
 // ============================================================
-// 7. 主线程 —— 定期显示服务器状态，等待关闭信号
+// 8. 主线程 —— 定期显示服务器状态，等待关闭信号
 // ============================================================
 var startTime = DateTime.Now;
 var statusTick = 0;
@@ -242,7 +261,7 @@ while (!shutdownEvent.Wait(10000))
 }
 
 // ============================================================
-// 8. 优雅关闭
+// 9. 优雅关闭
 // ============================================================
 Console.WriteLine("[关闭] 正在停止服务器...");
 ShutdownServer();

@@ -18,7 +18,7 @@ services:
     container_name: crystal-mir2
     ports:
       # 游戏端口（客户端连接用）
-      - "${GAME_PORT:-7000}:7000"
+      - "${SERVER_PORT:-7000}:7000"
       # 状态端口（可选，用于外部监控查询在线人数等）
       - "${STATUS_PORT:-3000}:3000"
     volumes:
@@ -44,6 +44,9 @@ services:
     environment:
       - TZ=Asia/Shanghai
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0
+      # 服务器配置（通过环境变量覆盖 Configs/Setup.ini）
+      - SERVER_IP=${SERVER_IP:-0.0.0.0}
+      - SERVER_PORT=${SERVER_PORT:-7000}
     restart: unless-stopped
     # 如果遇到权限问题（如端口绑定失败），取消下面的注释以 root 用户运行
     # user: "0:0"
