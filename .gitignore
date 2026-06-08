@@ -380,3 +380,6 @@ docker-entrypoint.sh
 
 # CrystalMir2-Client.zip（编译好的客户端包，太大）
 /CrystalMir2-Client.zip
+
+# macOS
+.DS_Store
