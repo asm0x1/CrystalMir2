@@ -71,6 +71,17 @@ CrystalMir2/
 └── docs/                   # 文档
 ```
 
+## 客户端下载
+
+预编译的 Windows 客户端可在 [Releases](https://github.com/asm0x1/CrystalMir2/releases) 下载。
+
+| 版本 | 文件 | 大小 | 说明 |
+|------|------|------|------|
+| **自包含版** | `CrystalMir2-Client-sc.zip` | ~74MB | ⭐ **推荐** — 无需安装 .NET，解压即用 |
+| **框架依赖版** | `CrystalMir2-Client-fd.zip` | ~7MB | 轻量级，需安装 [.NET 8 桌面运行时](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) (x64) |
+
+> ⚠️ 客户端程序**不包含**游戏资源文件（WZL/WIL 图像库、音效等），需从 [游戏数据](#游戏数据下载) 获取后放入对应目录。
+
 ## 构建
 
 需要 .NET 8 SDK。
