@@ -1,0 +1,64 @@
+# ============================================================
+# Crystal Mir2 Server - Docker Compose 编排
+# 作者: asm0x1
+#
+# 用法:
+#   docker compose up -d        # 后台启动
+#   docker compose up --build   # 重新构建并启动
+#   docker compose down         # 停止并移除容器
+#   docker compose logs -f      # 查看日志
+# ============================================================
+
+version: "3.8"
+
+services:
+  crystal-mir2:
+    build: .
+    image: crystal-mir2:latest
+    container_name: crystal-mir2
+    ports:
+      # 游戏端口（客户端连接用）
+      - "${GAME_PORT:-7000}:7000"
+      # 状态端口（可选，用于外部监控查询在线人数等）
+      - "${STATUS_PORT:-3000}:3000"
+    volumes:
+      # ---- 游戏数据（bind mount）----
+      # 配置文件目录（Setup.ini, ExpList.ini 等）
+      - ./Configs:/app/Configs
+      # 地图文件目录
+      - ./Maps:/app/Maps
+      # Envir 目录（NPC脚本、掉落、任务等）
+      - ./Envir:/app/Envir
+      # 本地化文件
+      - ./Localization:/app/Localization
+      # ---- 日志输出 ----
+      - ./Logs:/app/Logs
+      # ---- 持久化数据库（named volume）----
+      - server-db:/app/Server.MirDB
+      - server-accounts:/app/Server.MirADB
+      # ---- 备份目录 ----
+      - server-backup:/app/Back Up
+      # ---- 时区同步 ----
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - TZ=Asia/Shanghai
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0
+    restart: unless-stopped
+    # 如果遇到权限问题（如端口绑定失败），取消下面的注释以 root 用户运行
+    # user: "0:0"
+    networks:
+      - crystal-net
+
+volumes:
+  server-db:
+    name: crystal-mir2-db
+  server-accounts:
+    name: crystal-mir2-accounts
+  server-backup:
+    name: crystal-mir2-backup
+
+networks:
+  crystal-net:
+    name: crystal-net
+    driver: bridge
