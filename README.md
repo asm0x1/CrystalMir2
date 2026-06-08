@@ -90,6 +90,7 @@ Windows 客户端位于 `Client/`，使用 SlimDX (Direct3D9) 渲染。协议为
 ## 文档
 
 - [Docker 部署指南](docs/Docker部署指南.md)
+- [GM 命令指南](docs/GM命令指南.md)
 - [LOMCN Wiki - Crystal](https://www.lomcn.net/wiki/index.php/Crystal)
 - [构建指南](https://www.lomcn.net/wiki/index.php/Getting_Started)
 
